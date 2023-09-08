@@ -150,8 +150,8 @@ pub struct VestTransactions;
 
 #[Object]
 impl VestTransactions {
-    async fn buy_symbol(&self, _id_user: String, _transaction_type: String, _stock_symbol: String, _stock_units: i32) -> String {
-        let result = save_to_kf(_id_user, _transaction_type, _stock_symbol, _stock_units).await;
+    async fn buy_symbol(&self, _id_user: String, _stock_symbol: String, _stock_units: i32) -> String {
+        let result = save_to_kf(_id_user, String::from("BY"), _stock_symbol, _stock_units).await;
         match result
         {
             Ok(result) => format!("Resultado: {}", result),
@@ -159,8 +159,8 @@ impl VestTransactions {
         }
     }
 
-    async fn sell_symbol(&self, _id_user: String, _transaction_type: String, _stock_symbol: String, _stock_units: i32) -> String {
-        let result = save_to_kf(_id_user, _transaction_type, _stock_symbol, _stock_units).await;
+    async fn sell_symbol(&self, _id_user: String, _stock_symbol: String, _stock_units: i32) -> String {
+        let result = save_to_kf(_id_user, String::from("SL"), _stock_symbol, _stock_units).await;
         match result
         {
             Ok(result) => format!("Resultado: {}", result),
