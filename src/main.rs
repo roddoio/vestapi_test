@@ -11,12 +11,12 @@ type Result<T> = std::result::Result<T, Rejection>;
 
 #[tokio::main]
 async fn main() {
-
-    let schema = schema::MySchema::new(schema::QueryRoot, schema::VestTransactions, EmptySubscription);
+    
+    let schema = schema::MySchema::new(schema::Consultas, schema::VestTransactions, EmptySubscription);
 
     let graphql_post = async_graphql_warp::graphql(schema).and_then(
         |(schema, request): (
-            Schema<schema::QueryRoot, schema::VestTransactions, EmptySubscription>,
+            Schema<schema::Consultas, schema::VestTransactions, EmptySubscription>,
             async_graphql::Request,
         )| async move {
             Ok::<_, Infallible>(GraphQLResponse::from(schema.execute(request).await))
@@ -49,7 +49,6 @@ async fn main() {
             ))
         });
     
-
     println!("Service Started on port 8000");
     //warp::serve(routes).run(([127, 0, 0, 1], 8000)).await;
     warp::serve(routes).run(([0, 0, 0, 0], 8000)).await;

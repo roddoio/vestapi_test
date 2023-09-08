@@ -121,35 +121,37 @@ struct Response {
 }
 
 #[derive(Default)]
-pub struct QueryRoot;
+pub struct Consultas;
 
+///Listado de consultas admitidas
 #[Object]
-impl QueryRoot {
+impl Consultas {
+    ///Obtener los stocks de un usuario
     async fn stocks_by_user(&self, id: String) -> Result<Vec<Stocks>, tokio_postgres::Error> {
         let result = get_stocks_by_user(id).await;
         result
     }
 
+    ///Obtener el resumen de los stocks de un usuario
     async fn resume_stocks_by_user(&self, id: String) -> Result<Vec<ResumeStocks>, tokio_postgres::Error> {
         let result = get_resume_stocks_by_user(id).await;
         result
     }
 
+    ///Obtener el historico de precios de un usuario
     async fn historic_price_by_stock(&self, stock: String) -> Result<Vec<HistoricPriceStocks>, Box<dyn Error  + Send + Sync>> {
         let result = get_historic_price_by_stock(stock).await;
         result
-    }
-
-    async fn test(&self) -> String {
-        "Hello, friend!".to_string()
     }
 }
 
 #[derive(Default)]
 pub struct VestTransactions;
 
+///Operaciones de compra y venta
 #[Object]
 impl VestTransactions {
+    ///Comprar stocks
     async fn buy_symbol(&self, _id_user: String, _stock_symbol: String, _stock_units: i32) -> String {
         let result = save_to_kf(_id_user, String::from("BY"), _stock_symbol, _stock_units).await;
         match result
@@ -159,6 +161,7 @@ impl VestTransactions {
         }
     }
 
+    ///Vender stocks
     async fn sell_symbol(&self, _id_user: String, _stock_symbol: String, _stock_units: i32) -> String {
         let result = save_to_kf(_id_user, String::from("SL"), _stock_symbol, _stock_units).await;
         match result
@@ -392,7 +395,6 @@ async fn get_historic_price_by_stock(stock: String) -> Result<Vec<HistoricPriceS
     Ok(stocks_list)
 }
 
-
 async fn get_val_stock(_stock_symbol: String) -> Result<NASDAQObj, Box<dyn Error>>
 {
     static APP_USER_AGENT: &str = concat!(
@@ -444,4 +446,5 @@ async fn get_val_stock(_stock_symbol: String) -> Result<NASDAQObj, Box<dyn Error
     }
 }
 
-pub type MySchema = Schema<QueryRoot, VestTransactions, EmptySubscription>;
+///Prueba Vest
+pub type MySchema = Schema<Consultas, VestTransactions, EmptySubscription>;
